@@ -1,0 +1,100 @@
+V "GNAT Lib v3.14 "
+M P W=b
+P
+R nnvvnnvvnnnnvvvvvvvvvnnnnnnvnnvnnnvnnnnnvnn
+
+U decker%b		decker.adb		00E5156C NE SU
+W ada%s			ada.ads			ada.ali
+W ada.calendar.delays%s	a-caldel.adb		a-caldel.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.numerics%s	a-numeri.ads		a-numeri.ali
+W ada.numerics.float_random%s  a-nuflra.adb	a-nuflra.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W system%s		system.ads		system.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.img_real%s	s-imgrea.adb		s-imgrea.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.string_ops%s	s-strops.adb		s-strops.ali
+W system.task_info%s	s-tasinf.adb		s-tasinf.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+
+D ada.ads		19941113020443 2359F9ED
+D a-calend.ads		19971119133805 0E1F0C88
+D a-caldel.ads		19980214151222 6E8ED3D1
+D a-except.ads		20001220181314 18895590
+D a-finali.ads		19971119133819 3F32DEEF
+D a-filico.ads		19970305005844 1DECB9AC
+D a-inteio.ads		19941113020258 767F630A
+D a-ioexce.ads		19941113052010 175CB67B
+D a-numeri.ads		19941113020349 271ACBE2
+D a-nuflra.ads		19980718193644 23E0C99B
+D a-stream.ads		19971119133847 5F7C277B
+D a-tags.ads		19980810213501 45EF7E4E
+D a-textio.ads		20000826115840 2D24B708
+D a-tiinio.ads		19971119133950 284C234E
+D decker.adb		20030326202937 785E08F5
+D interfac.ads		19990427033020 0357E00A
+D i-c.ads		20000730230627 241A621F
+D i-cstrea.ads		20000730230359 7FB66A6A
+D system.ads		20000818213617 22B6217D
+D s-exctab.ads		19990919095915 7A25F5F9
+D s-ficobl.ads		20001027210341 0C03FD47
+D s-finimp.ads		19980220234008 1C201C0F
+D s-finroo.ads		20001114112810 7F5B7F76
+D s-imgint.ads		20000730202754 27699AC0
+D s-imgrea.ads		20000730202812 7AFCD204
+D s-osinte.ads		20001019084615 1261E48D
+D s-parame.ads		20000730230401 204FFF40
+D s-secsta.ads		19990723142132 60A2A5CD
+D s-soflin.ads		20001025172806 41BCF13E
+D s-stache.ads		19990409121031 42B57F2A
+D s-stalib.ads		20000818213539 4F0050D6
+D s-stoele.ads		19980907140905 131D4539
+D s-stratt.ads		20001228160445 1761725B
+D s-strops.ads		20000730202835 60FF16E6
+D s-tasinf.ads		20010110093122 16824B12
+D s-taspri.ads		20000706121240 55A132B1
+D s-taskin.ads		20000706121303 28374190
+D s-tassta.ads		19990729091139 72B0D55C
+D s-unstyp.ads		19990701235613 78AFB91D
+D unchconv.ads		19960730024842 72DC4539
+D unchdeal.ads		19961216024713 1B133BD2
+X 1 ada.ads
+18K9*Ada 15|1r6 1r23 2r6 2r31 3r6 3r37
+X 7 a-inteio.ads
+20K13*Integer_Text_IO 15|2r10 2r35
+X 9 a-numeri.ads
+19K13*Numerics 15|3r10 3r41
+X 10 a-nuflra.ads
+53K22*Float_Random 15|3r19 3r50
+57R9*Generator 15|13r42 34r10 56r10
+61V13*Random 15|16r14
+63U14*Reset 15|36r7 58r7
+X 13 a-textio.ads
+51K13*Text_IO 15|1r10 1r27
+260U14*Put_Line 15|17r7 23r7 29r7
+X 15 decker.adb
+5U11*Decker 79r5 79t11
+6E9 Acceso 9r12
+6n20 permitido 38r16 39r21 43r22 60r16 61r21 65r22
+6n31 denegado 9r22 41r22 49r16 63r22 71r16
+8i4 turno 40r16 50m10 62r16 72m10
+9e4 e1 38m10 41m16 43m16 49m10 61r16
+9e8 e2 39r16 60m10 63m16 65m16 71m10
+10t9 p1 33b14 53r8 53t10
+11t9 p2 55b14 75r8 75t10
+13U14 pescar 19r8 19t14 48r10 70r10
+13i21 e
+13R36 G 16r21
+14f7 pep 16m7 17r57
+21U14 pasear 25r8 25t14 42r16 45r16 64r16 67r16
+21i21 e 23r60
+27U14 otras_cosas 31r8 31t19 51r10 73r10
+27i26 e 29r64
+34R7 G 36r13 48r19
+56R7 G 58r13 70r20
+

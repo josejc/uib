@@ -1,0 +1,254 @@
+﻿	Per la realització de la pràctica la hem dividit en diferents processos, depenent de la seva tasca:
+
+Ruleta_Gestio: S’encarrega de la inicialització de la ruleta, creació dels processos inicials per al seu funcionament aixi com la seva gestió, amb les següents opcions
++: Afegeix un jugador a la ruleta.
+-: Elimina un jugador de la ruleta.
+E: Imprimeix l’estat de la ruleta.
+S: Surt de la ruleta.
+
+Bolla: Espera a que la banca la posi en moviment i va canviant el nombre de la bolla a diferent velocitats de temps i quan s’atura li diu a la banca per que finalitzi la jugada.
+
+Temps: Espera a que la banca li doni la ordre de començar un espai temporal que quan aquest acaba li indica a la banca per que deixi d’aceptar apostes i començi la jugada.
+
+Jugador: Espera a tenir ganes de jugar, fa una aposta i l’indica a la banca, aquest espera que la banca li doni una resposta i comprova si la seva aposta ha estat aceptada o no. 
+En cas de que no hagi estat aceptada torna a començar, si la aposta ha estat aceptada, espera que la banca li digui quan comença la jugada, despres va mirant a estones la bolla, el valor que agafa i un pic la jugada ha finalitzat comprova si ha guanyat o perdut.
+El jugador no controla mai els diners (nombre de fitxas que te), hem suposat el sistema que si el jugador es queda sense fitxas anira al banc a per mes diners.
+
+Banca: Espera un periode de temps donat pel process Temps, en aquest periode totes les apostes que le arriven son aceptades quan finalitza el periode de temps posa la bolla en marxa, e indica a tots els jugadors que tenen una aposta aceptada que la jugada comença.
+Mentres la bolla esta en moviment totes les apostes que li arrivan son rebutjades, quan la bolla s’atura la banca atura la jugada i comprova els jugadors que han guanyat i els que han perdut, per controlar el nombre de fitxas que te la banca, si es un nombre negatiu aleshores la banca ha saltat i finalitzam el joc, en cas contrari esborra totes les apostes aceptades i torna a començar. 
+
+Dins la regió critica tenim emmagatzemades les següents variables:
+
+Bolla: Enter que conte els diferents nombres que agafa la bolla.
+
+JugadaMarxa: Es un Boolea que conte si la jugada esta en marxa.
+
+NFitxasBanca: Enter amb les fitxas que te la banca.
+
+Aceptades: Llista de apostes que la banca ha aceptat per la proxima jugada.
+
+Pendents: Llista de apostes que la banca encara ha d’aceptar o rebutjar depenent de si hi ha una jugada en marxa.
+
+Morts: Llista de jugadors que en la gestio han eliminat i quan el jugador hagi de començar una jugada comprovara per veure si ha de finalitzar o continuar en el joc.
+
+Acaba: Boolea que indica a tots els procesos si el joc ha finalitzat i han de morir.
+
+Per poder fer la regió critica tenim un semafor mutex i per la senyalització entre els procesos tenim definits els següents semafors:
+
+AvisBanca: Semafor comú que fan servir tots el procesos quan han d’avisar a la banca, la banca fent comprovacions a la regió critica prodra reconeixer quin proces ha estat el que l’avisada.
+
+AvisJugador[MAX_JUGADORS]: Un semafor per cada jugador, per que la banca pugui avisar al jugador indicat si la aposta ha estat aceptada, rebutjada i quan comença la jugada.
+
+BollaMov: Semafor que fa servir la banca per posar la bolla en moviment.
+
+IniTemps: Semafor que fa servir la banca per inicialitzar (començar) l’espai temporal que controla el proces Temps.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-: PSEUDOCODI :-
+
+Ruleta_Gestio
+	inicialitzacions
+	crear bolla
+	crear temps
+	crear jugador
+	crear banca
+	fi = fals
+	mentres (no fi)
+		imprimir menu
+		esperar opcio
+		cas
+			e: imprimir estat ruleta
+			+: crear jugador
+			-: eliminar jugador
+			f: fi ruleta
+		fcas
+	fmentres
+fRuleta_Gestio
+
+Bolla
+	inicialitzacions
+	mentres (veritat)
+		si (RC.acabar)
+			finalitzar()
+		fsi
+		// Esperam que la banca posi la bolla en marxa
+		bollaMov.wait();
+		per I=1 fins 2 		//La bolla tindra esperas de 1 i 2 segong
+			per J=1 fins CANVIS_SEG
+				espera(SEGON*I)
+				RC.seccEnt();
+				canvia valor bolla
+				RC.seccSal();
+			fper
+		fper
+		// Avisam a la banca que la bolla esta aturada
+		avisBanca.signal();
+	fmentres
+fBolla
+
+Temps
+	inicialitzacions
+	mentres (veritat)
+		si (RC.acabar)
+			finalitzar()
+		fsi
+		// Esperam que la banca posi el temps en marxa
+		iniTemps.wait();
+		espera(ESPAI_TEMPORAL);
+		// Avisam a la banca que el espai temporal ha finalitzat
+		avisBanca.signal();
+	fmentres
+fTemps
+
+Jugador
+	inicialitzacions
+	mentres (veritat)
+		// El jugador finalitzara en cas
+			// 1.- El joc ha finalitzat
+		si (RC.acabar)
+			finalitzar()
+		fsi
+			// 2.- Han eliminat al jugador
+		RC.seccEnt();
+		si  (llista morts conte a jugador)
+			eliminar jugador de llista morts
+			RC.seccSal();
+			finalitzar();
+		fsi
+		RC.seccSal();
+		espera(TENIR_GANES_JUGAR);
+		aposta = genera_aposta();	// El jugador sempre te $ per fer apostas
+		RC.seccEnt();
+		afegir llista apostas pendents(aposta);
+		RC.seccSal();
+		// Avisam a la banca de que hem fet una aposta
+		avisBanca.signal();
+		// El jugador “i” espera la resposta de la banca
+		avisJugador(identificador).wait();
+		RC.seccEnt();
+		si (llista apostas aceptades conte aposta)
+			RC.seccSal();
+			// El jugador “i” espera a que la jugada se posi en marxa
+			avisJugador(identificador).wait();
+			RC.seccEnt();
+			mentres (no fi jugada)
+				RC.seccSal();
+				espera(TEMPS_MIRAR)
+				mirar valor bolla
+				RC.seccEnt();
+			fmentres
+			mirar valor guanyador
+		sino
+			aposta ha estat rebutjada
+		fsi
+		RC.seccSal();
+	fmentres
+fJugador
+Banca
+	inicialitzacions
+	mentres (veritat)
+		si (RC.acabar)
+			finalitzar()
+		fsi
+		// Inicialitzam el espai temporal d’aceptacio d’apostas
+		iniTemps.signal();
+		RC.seccEnt();
+		mentres (no jugada marxa)
+			RC.seccSal();
+			// Esperam per una aposta o finalitzi el temps d’aceptacio
+			avisBanca.wait();
+			RC.seccEnt();
+			si (llista apostas pendents es buida)
+				// La señal rebuda era que ha finalitzat el temps
+				jugada marxa = veritat
+				RC.seccSal();
+			sino
+				// La señal era d’un jugador que ha fet una aposta
+				pasar aposta de pendents a aceptades
+				RC.seccSal();
+				// Avisam al jugador que la seva aposta ha estat aceptada
+				avisJugador(aposta.jugador).signal();
+			fsi
+			RC.seccEnt();
+		fmentres
+		RC.seccSal();
+		// Ara començam la jugada, posam la bolla en marxa i...
+		// avisam als jugadors que tenen apostas aceptades...
+		RC.seccEnt();
+		recorrer llista aposta aceptades
+			RC.seccSal();
+			avisJugador(aposta.jugador).signal();
+			RC.seccEnt();
+		frecorrer	
+		RC.seccSal();
+		bollaMov.signal();
+		RC.seccEnt();
+		mentres (jugada marxa)
+			RC.seccSal();
+			// Esperam apostes que seran rebutjades mentres la jugada  marxa
+			// O la bolla s’aturi
+			avisBanca.wait();
+			RC.seccEnt();
+			si (llista apostas pendents es buida)
+				// La señal rebuda era que ha bolla s’aturat
+				jugada marxa = fals
+				RC.seccSal();
+			sino
+				// La señal era d’un jugador que ha fet una aposta 
+				elimar aposta de pendents
+				RC.seccSal();
+				// Avisam al jugador que la seva aposta ha estat rebutjada
+				avisJugador(aposta.jugador).signal();
+			fsi
+			RC.seccEnt();
+		fmentres
+		RC.seccSal();
+		// Ara miram el nombre guanyador i els jugadors agraciats :P
+		RC.seccEnt();
+		recorrer llista aposta aceptades
+			si (aposta.numero == nombre guanyador)
+				// El jugador guanya i li hem de pagar el doble d l’aposta
+				nFitxasBanca = nFitxasBanca – 2*aposta.fitxas
+			sino
+				// La banca se queda las fitxas de la aposta
+				nFitxasBanca = nFitxasBanca + aposta.fitxas
+			fsi
+		frecorrer	
+		// Miram si la banca ha saltat
+		si (nFitxasBanca <= 0)
+			// La banca ha saltat
+			continuar = false;
+			finalitzar();
+		sino
+			// Eliminam totes les apostes per començar la prox. Jugada
+			eliminar totes apostes aceptades
+		fsi
+		RC.seccSal();
+	fmentres
+fBanca
+
