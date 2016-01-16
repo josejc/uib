@@ -1,0 +1,31 @@
+V "GNAT Lib v3.14 "
+P
+R vnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnn
+
+U buffer%b		buffer.adb		04F2B7EB PK GE IL
+
+U buffer%s		buffer.ads		5CD5B759 NE PK GE IL
+
+D buffer.ads		20030429114320 5CD5B759
+D buffer.adb		20030429114320 582700B2
+D system.ads		20000818213617 22B6217D
+X 1 buffer.ads
+2i4 tamany 7r37 16r31 2|5r48 9r31 16r31
+3+9 tipus 8r33 11r27 12r31 2|5r28 12r32
+5k9*buffer 20r5 20e11 2|1b14 25r5 25t11
+7I12 rang 8r24 17r17
+8A9 taula 15r17
+10W19 BUFFER 18r8 18e14 2|3b19 23r8 23t14
+11Y13 send 2|5b13 10r11 10t15
+11+18 valor 2|8r27
+12Y13 receive 2|12b13 17r11 17t18
+12+21 valor 2|15m10
+13V16 empty 2|19b16 22r11 22t16
+15a7 elements 2|8m10 15r19
+16i7 total 2|5r40 7m10 7r19 12r44 14m10 14r19
+17i7 cap 2|15r28 16m10 16r18 21r18
+17i12 coa 2|8r19 9m10 9r18 21r22
+X 2 buffer.adb
+5+18 valor
+12+21 valor
+

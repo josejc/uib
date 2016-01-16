@@ -1,0 +1,38 @@
+V "GNAT Lib v3.14 "
+P
+R nnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnn
+
+U comanda%b		comanda.adb		6483B07D PK GE IL
+
+U comanda%s		comanda.ads		204D9FA9 NE PK GE IL
+
+D comanda.ads		20030429114320 204D9FA9
+D comanda.adb		20030429114321 44CE2FD4
+D system.ads		20000818213617 22B6217D
+X 1 comanda.ads
+3i1 maxPizzas 11r40
+4+6 tipus1 13r43 24r42 25r40 2|20r42 24r40
+5+6 tipus2 21r29 22r27 32r13 2|12r29 16r27
+9k9*comanda 34r5 34e12 2|1b14 41r5 41t12
+11I9 rangPizzas 13r28
+13A6 arrayPizzas 30r16
+15W19 Comanda 33r8 33e15 2|3b19 40r8 40t15
+17V16 cliente 2|4b16 7r11 7t18
+19U17 cliente 2|8b17 11r11 11t18
+19i26 i 2|8b26 10r17
+21V16 error 2|12b16 15r11 15t16
+22U17 error 2|16b17 19r11 19t16
+22+24 i 2|16b24 18r17
+24V16 pizza 2|20b16 23r11 23t16
+24i23 i 2|20b23 22r24
+25U17 pizza 2|24b17 27r11 27t16
+25i24 i 2|24b24 26r17
+25+35 nom 2|24b35 26r23
+26V16 num 2|28b16 31r11 31t14
+27U17 inc 2|32b17 35r11 35t14
+28U17 dec 2|36b17 39r11 39t14
+30a7 pizzas 2|22r17 26m10
+31i7 total 2|30r17 34m10 34r19 38m10 38r19
+31i14 cli 2|6r17 10m10
+32+7 err 2|14r17 18m10
+

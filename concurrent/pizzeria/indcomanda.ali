@@ -1,0 +1,19 @@
+V "GNAT Lib v3.14 "
+P
+R nnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnn
+
+U indcomanda%b		indcomanda.adb		70FC0EB1 PK GE IL
+
+U indcomanda%s		indcomanda.ads		1E6CBECF NE PK GE IL
+
+D indcomanda.ads	20030429114320 1E6CBECF
+D indcomanda.adb	20030429114321 6E90B07E
+D system.ads		20000818213617 22B6217D
+X 1 indcomanda.ads
+3i1 max 2|6r34
+7k9*indcomanda 17r5 17e15 2|1b14 10r5 10t15
+9W19 indComanda 16r8 16e18 2|3b19 9r8 9t18
+13U17 ind 2|4b17 8r11 8t14
+13i22 i 2|4b22 7m10
+15i7 total 2|6m10 6r20 7r15
+

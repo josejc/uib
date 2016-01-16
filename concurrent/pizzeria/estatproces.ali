@@ -1,0 +1,37 @@
+V "GNAT Lib v3.14 "
+P
+R nnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnn
+
+U estatproces%b		estatproces.adb		4D4FEC20 PK GE IL
+
+U estatproces%s		estatproces.ads		767A7D0D NE PK GE IL
+
+D estatproces.ads	20030429114320 767A7D0D
+D estatproces.adb	20030429114320 3B35912D
+D system.ads		20000818213617 22B6217D
+X 1 estatproces.ads
+3i1 max 12r34
+4+6 tipus1 14r33 22r43 23r43 2|12r43 16r43
+5+6 tipus2 15r32 19r42 20r43 2|4r42 8r42
+10k9*estatproces 35r5 35e16 2|1b14 33r5 33t16
+12I9 rang 14r24 15r23
+14A6 aGestio 31r17
+15A6 aFeina 32r16
+17W19 estatProces 34r8 34e19 2|3b19 32r8 32t19
+19V16 feina 2|4b16 7r11 7t16
+19i23 i 2|4b23 6r24
+20U17 feina 2|8b17 11r11 11t16
+20i24 i 2|8b24 10r17
+20+36 estat 2|8b35 10r23
+22V16 gestio 2|12b16 15r11 15t17
+22i24 i 2|12b24 14r25
+23U17 gestio 2|16b17 19r11 19t17
+23i25 i 2|16b25 18r18
+23+36 estat 2|16b36 18r24
+27V16 num 2|20b16 23r11 23t14
+28U17 inc 2|24b17 27r11 27t14
+29U17 dec 2|28b17 31r11 31t14
+31a7 gestioA 2|14r17 18m10
+32a7 feinaA 2|6r17 10m10
+33i7 total 2|22r17 26m10 26r19 30m10 30r19
+

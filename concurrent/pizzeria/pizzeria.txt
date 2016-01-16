@@ -1,0 +1,144 @@
+
+
+
+
+
+
+
+
+Programació Concurrent
+La pizzeria
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+José Jesús Cabezas Castillo
+37.335.334-D
+
+
+
+	
+	El programa esta format per diferents mòduls amb diferents funcions, la seva estructura es :
+
+'pizzeria': mòdul principal, que controla els diferents processos i a on tenim el control de la interactivitat amb el programa, les variables globals, que fan servir les diferentes tasques i la definició de les mateixes.
+'buffer': paquet generic que implementa el buffer amb tipus protegits i afegeix una funció que retorna quan el buffer esta buit, d'aquesta manera podem accedir al buffer coneixent si hi ha dades per agafar.
+'comanda': paquet que conté les dades que ha de enmagatzemar una comanda, les pizzes, el client que la fa i tambe tenim un tipus per enregistrar un error en cas necesari, les dades estan dins un tipus protegit pero no es necesari per que tenim que les comandes s'enmagatzemam a un array i el perill es fer servir la mateixa posició del array.
+'indcomanda': paquet que proporciona amb un tipus protegit exclusió mutua al index del array comandes, a on accedeixen tots els procesos per tractar les comandes (el problema que soluciona es que dos o mes clients no accediran a la mateixa posició del array de les comandes).
+ 'estatproces': paquet generic que serveix per enmagatzemar el estat dels diferents procesos (clients, cuiners, repartidors), aixi como l'estat a on es trobem de la feina, i tambe l'index de l'array a on tenim els punters als procesos en la pizzeria.
+
+	Els diferents procesos estan definits dins el mòdul principal 'pizzeria' i son els 
+següents:
+
+'encarregat': Actua de pasarela, rep mitjançan un buffer definit per això les comandes dels clients (ja definides, sino els clients haurien de dir les pizzes i l'encarregat definir la comanda, per simplificació del problema els clients ja tenen feta la comanda) i les reenvia a un altre buffer de comandes a fer per que les agafin els cuiners.
+Tambe actua de pasarela per les comandes que terminen de fer els cuiners i les pasa als repartidors que estan esperant (mitjançan tambe un altre buffer). Per que aquest proces no se quedi mai esperant comproba si ha de agafar qualque comanda dels buffers comprovant si estan buits.
+'client': Crea i demana una comanda (l'envia al buffer de demanar, per que l'encarregat l'agafi), espera que el repartidor li entregui, aquesta espera se fa amb un punt d'entrada dins el proces per que el repartidor li entrega directament al client, un pic l'arrebuda comprova els errors que estan indicats dins la comanda (mitjançan els missatges que dona el programa se comprova que el client sempre rep la comanda que havia demanat), despres d'una estona quan torni a tenir gana torna a començar.
+'cuiner': Espera una comanda (amb un buffer dins el cual l'encarregat posa les comandes a fer), fa la comanda i pot introduir un error de manera aleatoria al realitzar la comanda, retorna aquesta comanda a l'encarregat (un buffer per les comandes fetes) i torna a començar.
+'repartidor': Espera una comanda (un buffer per les comandes a entregar), mira de quin client es la comanda, pot introduir tambe un error de manera aleatoria i espera una estona que es el temps de repartir la comanda i finalment l'entrega al client de manera directa, despres torna al començament.
+
+	Les ordres que interactuan amb la pizzeria son les següents, es indiferent si son mayucules o minuscules:
+
+'e': Imprimeix l'estat de com se troben els diferents procesos del sistema, exceptuant l'encarregat que es un únic proces i sempre esta viu.
+'f': Finalitza l'execució i retorna al sistema operatiu.
+	
+	Si hi ha qualque proces bloquetjat no se podra crear ni eliminar fins que queda lliure l'espai de l'array que ocupa, es a dir, fins que el proces no termina de manera correcta.
+
+'c+': Crea un nou cuiner si es posible, es a dir com a màxim tres.
+'c-': Elimina un cuiner, li camvia l'estat, el cuiner fins que no acaba la feina que te a mitges no es morira, queda bloquetjat. 
+'i+': Crea un nou client si es posible, controlant el màxim de clients permessos.
+'i-': Elimina un client, li camvia l'estat, el client fins que no acaba la feina que te no es morira, queda bloquetjat.
+'r+': Crea un nou repartidor, comprovant el màxim de repartidors.
+'r-': Elimina un repartidor, que morira quan finalitza la feina que estigui fent.
+
+	El pseudocòdig de les diferents procesos es:
+
+	inici dependent
+	   inicialitzacions;
+	   mentre veritat
+	      si buffer_comanda_demanada_no_buit aleshores
+	         agafar_comanda;
+                              potser_posar_error_dins_comanda;
+	         posar_comanda_dins_buffer_comandas_a_fer;
+                           fi_si
+                           si buffer_comanda_feta_no_buit aleshores
+	         agafar_comanda;
+                              posar_comanda_dins_buffer_comandas_a_entregar;
+                           fi_si
+	   fi_mentre
+	fi dependent;
+
+	inici client
+	   inicialitzacions;
+	   mentre client_viu
+	      espera_tenir_gana;
+                           tria_crea_comanda;
+                           posar_comanda_dins_buffer_comandes_demanar;
+	      espera_comanda;
+                           comprova_errors_dins_comanda;
+	   fi_mentre
+	fi client
+
+	inici cuiner
+	   inicialitzacions;
+	   mentre cuiner_viu
+	      espera_comanda;
+                           fer_comanda;
+	      potser_posar_error_dins_comanda;
+	      posar_comanda_dins_buffer_comandas_fetes;
+	   fi_mentre
+	fi cuiner;
+
+	inici repartidor
+	   inicialitzacions;
+   	   mentre repartidor_viu
+	      espera_comanda;
+                           potser_posar_error_dins_comanda;
+	      espera_temps_repartir;
+                           entregar_comanda_client;
+	   fi_mentre
+	fi repartidor;
+
+	inici pizzeria
+	   inicialitzacions;
+	   mentre no_fin
+	      espera_ordre
+	      cas ordre
+ 	         'e': imprimeix_estat:
+	         'f': finalitzar
+	         'c+': crea_cuiner
+	         'c-': eliminar_cuiner
+	         'i+': crear_client
+	         'i-': eliminar_client
+	         'r+': crear_repartidor
+	         'r-': eliminar_repartidor
+	      fi_cas
+	   fi_mentre
+	fi pizzeria
+	
+	
