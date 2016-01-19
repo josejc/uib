@@ -12,27 +12,29 @@ import (
 // Constants in CAPITALS
 const ()
 
-// initf read a file the sample of ramdon U[0,1]
-func initf(f *os.File, w *[M][N][H]int) bool {
-	var r *strings.Reader
-	var b byte
-	var x, y, oldy int
+// initf read a file the sample of random U[0,1] return slice with the values
+func initf(f *os.File) []float32 {
+	var values []float32
 
 	input := bufio.NewScanner(f)
 	for input.Scan() {
 		s := strings.Split(input.Text(), " ")
-		x, _ = strconv.Atoi(s[1])
-		y, _ = strconv.Atoi(s[2])
-		x += (M / 2)
-		y += (N / 2)
+		for _, elem := range s {
+			i, err := strconv.ParseFloat(elem, 32)
+			if err != nil {
+				// fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
+			} else {
+				values = append(values, float32(i))
+			}
+		}
 	}
-	return true
+	return values
 	// NOTE: ignoring potential errors from input.Err()
 }
 
 // main function for run and test the B2 practice implementation
 func main() {
-	var world [M][N][H]int
+	var u []float32
 
 	run := true
 	files := os.Args[1:]
@@ -41,15 +43,16 @@ func main() {
 	} else {
 		// Only open the first argument, one file
 		arg := files[0]
-		f, err := os.Open(arg)
+		fd, err := os.Open(arg)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 			run = false
 		} else {
-			run = initf(f, &world)
-			f.Close()
+			u = initf(fd)
+			fd.Close()
 		}
 	}
 	if run {
+		fmt.Println(u)
 	}
 }
