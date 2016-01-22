@@ -13,8 +13,8 @@ import (
 const ()
 
 // initf read a file the sample of random U[0,1] return slice with the values
-func initf(f *os.File) []float32 {
-	var values []float32
+func initf(f *os.File) []float64 {
+	var values []float64
 
 	input := bufio.NewScanner(f)
 	for input.Scan() {
@@ -24,7 +24,7 @@ func initf(f *os.File) []float32 {
 			if err != nil {
 				// fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 			} else {
-				values = append(values, float32(i))
+				values = append(values, i)
 			}
 		}
 	}
@@ -34,7 +34,7 @@ func initf(f *os.File) []float32 {
 
 // main function for run and test the B2 practice implementation
 func main() {
-	var u []float32
+	var u []float64
 
 	run := true
 	files := os.Args[1:]
