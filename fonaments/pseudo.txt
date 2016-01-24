@@ -1,0 +1,490 @@
+program Snd_prac;                               {Nacimiento del programa}
+	const
+		Ed = 0.1;
+	type
+		partc = record							{Registro de las particulas}
+				part: rect;
+				acel: array[1..3] of real;
+				velc: array[1..4] of real;
+				fuel: array[1..4] of real;
+				posn: array[1..4] of real;
+			end;
+		sist = array[1..5] of partc;		{Max. 5 particulas}
+		bot = array[1..4] of rect;
+		sld = array[1..2, 1..6] of rect;
+		vsld = array[1..6] of real;
+	var
+		spart: sist;
+		boton: bot;								{Rectangulo de los botones}
+		slid: sld;									{		"				sliders}
+		np: integer;
+		mundo, area: rect;
+		vsd: vsld;									{Valores de los sliders}
+
+
+                    {*** Funciones y Procedimientos ***}
+
+// Eleva num a la potència donada
+function elev (num: real; pot: integer): real;
+
+// Assigna la grandària de la partícula segons la massa
+function taman (masa: real; punto: point): rect;
+
+// Inicialitza el sistema de partícules
+procedure inic_sist (var sp: sist);
+// El sistema de particules son N particules cadascuna amb vectors 2d (x,y)
+// - acceleració: vector(x,y), m=massa de la partícula
+// - velocitat: vectors (x,y), (a,b)? temps anterior?
+// - força: vectors (x,y), (a,b)=sentit 0=positiu (+), 1=negatiu (-)
+// - posició: vectors (x,y), (a,b)?
+
+// Inicialitza el valor dels 'sliders' 
+procedure inic_vsld (var sl: vsld);
+// Son 6 tots amb v=0.0000000001
+// -Massa
+// -Increment temps
+// -Distància equilibri
+// -Desplaçament
+// -Energia tèrmica
+// -Viscositat
+
+// Inicialitza els botons
+procedure inic_bot (var bt: bot);
+// -Crear
+// -Moure
+// -Esborrar
+// -Sortir
+
+// Inicialitza els rectangles que representa el valor dels 'sliders'
+procedure inic_slid (var sd: sld);
+
+
+// Escriu el nom dels elements gràfics
+procedure nombres;
+// -sliders
+// -botons
+
+// Dibuixa els elements gráfics
+procedure pantalla (bt: bot; sd: sld; md: rect);
+// Area del sistema de partícules
+// Botons, sliders i noms
+
+// Calcula la força (vector 2d)
+procedure calc_fuel (pan, nm: integer; sl: vsld; var sp: sist);
+// pan = nombre partícules al sistema
+// nm = nombre partícula de la que esteim calculant la força
+// sl = valors dels sliders (valors del sistema)
+// sp = sistema de partícules
+// La força d'aquesta partícula depen de totes les particules, excepte de ella mateixa
+// inici
+//  força_partícula_calculam = 0
+//  per a totes partícules
+//      si partícula_actual!=partícula_calculam
+//          calcula_distancia_entre_elles (diferencia posicions/arrel quadrada distancia)
+//          aplica la formula F
+//          força_particula_calculam += F
+//      fsi
+//  fper
+// fi
+
+// Càlcula l'acceleració (vector 2d)
+procedure calc_acel (num: integer; sl: vsld; var sp: sist);
+// num = nombre partícula de la que calculam l'acceleració
+// sl = valors dels sliders
+// sp = sistema de partícules
+// acceleració_vector = força_vector / acceleració
+
+// Cálcula velocitat
+procedure calc_velc (num: integer; sl: vsld; var sp: sist);
+// num = nombre partícula de la que calculam la velocitat
+// sl = valors dels sliders
+// sp = sistema de partícules
+// vectors velocitat
+// a,b = x,y
+// x,y = a,b + (slider_incr.temps * vector_acceleració)
+// x,y = x,y * slider_desplaçament
+// Sentinelles amb màxim velocitat i mínim
+// Sentinelles força (a,b)
+// a controla desplaçament horitzontal velocitat_x, si a=0 x es positiu, sino x es negatiu
+// b controla desplaçament vertical velocitat_y, si b=0 y es positiu, sino y es negatiu
+
+// Càlcula viscositat
+procedure calc_visc (num: integer; sl: vsld; var sp: sist);
+// num = nombre partícula afectada per la viscositat
+// sl = valors dels sliders
+// sp = sistema de partícules
+// El cálcul de la viscositat afecta al vector força x,y d'aquesta partícula
+x -= (slider_viscositat*vector_velocitat_x)
+y -= (slider_viscositat*vector_velocitat_y)
+
+// Càlcula nova posició 2d (vector)
+procedure calc_posn (num: integer; sl: vsld; var sp: sist);
+// num = nombre partícula de la que calculam la posició
+// sl = valors dels sliders
+// sp = sistema de partícules
+// posicio_x += (slider_inc_temps * (velocitat_x + velocitat_a))/2
+// posicio_y += (slider_inc_temps * (velocitat_y + velocitat_b))/2
+// comprobación posició dins limits mon
+// si surt per la dreta (x>limit_dreta)
+//  negam força_a (0=1,1=0)
+//  calculam posició_x dins limits
+// fsi
+// si surt per la esquerra (x<limit_esquerra)
+//  negam força_a (0=1,1=0)
+//  calculam posicio_x dins limits
+// fsi
+// si surt per dalt (y>limit_alt)
+//  negam força_b (0=1,1=0)
+//  calculam posicio_y dins limits
+// fsi
+// si surt per baix (y<limit_baix)
+//  negam força_b (0=1,1=0)
+//  calculam posicio_y dins limits
+// fsi
+
+// Dibuixa partícula gráfica
+	procedure dibuja (num: integer; var sp: sist);
+// num = nombre partícula que dibuixam
+// sp = sistema de partícules
+// vector posicio (a,b)
+// si (a,b) dins mon
+//  calcula_tamany(massa_partícula->acceleracio_m)
+//  dibuixa_partícula_gráfica
+// fsi
+
+// Sistema de partícules dinámic
+procedure sist_part (num: integer; sl: vsld; var sp: sist);
+// num = nombre partícula feim els càlculs amb valors del sistema (sliders)
+// per a totes les partícules del sistema
+//  calcula_força
+//  calcula_velocitat
+//  calcula_viscositat
+//  calcula_acceleració
+//  calcula_velocitat
+//  calcula_posició
+// fper
+
+// Creació nova partícula, acció cridada pel botó de la UI
+procedure crear (bt: bot; md: rect; var num: integer; var sp: sist; sl: vsld);
+
+		var
+			p: point;
+			fin: boolean;
+			r: rect;
+			i: integer;
+			z: real;
+	begin										{La creacion es algo natural,...}
+	fin := false;
+	repeat
+		repeat
+			sist_part(num, sl, sp);		{Tendremos que seguir en movimiento}
+		until button;
+		getmouse(p);
+		if ptinrect(p, md) then				{Llamando a la Tierra, Tierra}
+			begin
+			if (sl[1] <> 0) and (num <> 5) then			{Existen limites}
+				begin
+				num := num + 1;									{Cuantos somos o seremos}
+				setrect(r, 258, 239, 464, 260);
+				eraserect(r);
+				moveto(258, 248);
+				writedraw('Particulas : ');
+				writedraw(num);
+				sp[num].posn[1] := p.h;						{Nuevas asignaciones}
+				sp[num].posn[2] := p.v;
+				sp[num].posn[3] := p.h;
+				sp[num].posn[4] := p.v;
+				sp[num].acel[3] := sl[1];
+				sp[num].part := taman(sl[1], p);
+				paintoval(sp[num].part);
+				end;
+			fin := true;
+			end;
+		if ptinrect(p, bt[4]) then						{Y si queremos salir de otra manera}
+			fin := true;
+	until fin;
+	end;
+
+	procedure mover (bt: bot; md: rect; num: integer; var sp: sist; sl: vsld);
+		var
+			p, h: point;
+			fin: boolean;
+			i, x: integer;
+	begin								{Existe tambien la capacidad de teletransportacion...}
+	fin := false;
+	repeat
+		repeat														{Seguimos en movimiento}
+			sist_part(num, sl, sp);
+		until button;
+		getmouse(p);
+		for i := 1 to num do
+			begin
+			if ptinrect(p, sp[i].part) then				{Controlamos que sea una particula}
+				begin
+				h := p;
+				repeat
+					if not equalpt(p, h) then
+						begin
+						if ptinrect(p, md) then
+							begin
+							eraseoval(sp[i].part);
+							sp[i].part := taman(sp[i].acel[3], p);
+							paintoval(sp[i].part);
+							sp[i].posn[1] := p.h;
+							sp[i].posn[2] := p.v;
+							sp[i].posn[3] := p.h;
+							sp[i].posn[4] := p.v;
+							sp[i].fuel[1] := 0;
+							sp[i].fuel[2] := 0;
+							sp[i].fuel[3] := 0;
+							sp[i].fuel[4] := 0;
+							sp[i].velc[1] := 0;
+							sp[i].velc[2] := 0;
+							sp[i].velc[3] := 0;
+							sp[i].velc[4] := 0;
+							sist_part(num, sl, sp);	{La teletransportacion tiene sus influencias}
+							end;
+						h := p;
+						end;
+					getmouse(p)
+				until not button;
+				fin := true;
+				end;
+			end;
+		if ptinrect(p, bt[4]) then				{He aqui, la otra salida}
+			fin := true;
+	until fin;
+	end;
+
+
+	procedure borrar (bt: bot; md: rect; var num: integer; var sp: sist; sl: vsld);
+		var
+			p: point;
+			fin: boolean;
+			r: rect;
+			i, j: integer;
+	begin								{Y lo que deja de existir tambien es natural}
+	fin := false;
+	repeat
+		repeat
+			sist_part(num, sl, sp);				{Cada loco con su locura, he aqui movimiento}
+		until button;
+		getmouse(p);
+		for i := 1 to num do
+			begin
+			if ptinrect(p, sp[i].part) then
+				begin
+				eraseoval(sp[i].part);				{El borrar tambien tiene su arte}
+				if i <> num then
+					for j := i to (num - 1) do
+						sp[i] := sp[i + 1];
+				for j := 1 to 4 do			{Al dejar de existir, sus valores se han ido con el}
+					begin
+					sp[num].acel[j] := 0;
+					sp[num].velc[j] := 0;
+					sp[num].fuel[j] := 0;
+					sp[num].posn[j] := 0;
+					end;
+				num := num - 1;							{Queremos seguir sabiendo cuantos somos}
+				setrect(r, 258, 239, 464, 260);
+				eraserect(r);
+				moveto(258, 248);
+				writedraw('Particulas : ');
+				writedraw(num);
+				fin := true;
+				end;
+			end;
+		if ptinrect(p, bt[4]) then				{Parece ser que siempre hay + salidas}
+			fin := true;
+	until fin;
+	end;
+
+	procedure opciones (bt: bot; sd: sld; sp: sist; md: rect; np: integer; sl: vsld);
+		var
+			p: point;
+			i, j, aux, auy, x, c, rt: integer;
+			sol: real;
+			fin: boolean;
+			r, aur: rect;
+	begin									{Siempre hay un jefe, o el cuerpo del programa}
+	fin := false;
+	repeat
+		repeat
+			sist_part(np, sl, sp);		{La mente calcula el lugar de todos en nuestro destino}
+		until button;
+		getmouse(p);					{Ring,...,ring...}
+		i := 1;
+		repeat							{Preguntamos si es para algun slider}
+			if ptinrect(p, sd[1, i]) then
+				begin
+				aux := 25;
+				auy := 47;
+				for j := 1 to (i - 1) do
+					begin
+					aux := aux + 37;
+					auy := auy + 37;
+					end;
+				setrect(aur, 26, aux, p.h, auy);
+				setrect(r, 130, aux, 228, auy);
+				if not equalrect(aur, sd[2, i]) then		{Ha cambiado algo?}
+					begin
+					invertrect(sd[2, i]);
+					sd[2, i] := aur;
+					invertrect(sd[2, i]);
+					framerect(sd[1, i]);
+					moveto(130, auy);
+					eraserect(r);
+					x := p.h - 26;
+					if i = 3 then							{No todos tienen los mismos valores}
+						x := (x * 115) div 100;
+					c := x div 10;
+					rt := x mod 10;
+					if rt = 0 then
+						rt := 1;
+					case c of								{Desde 10elev10 hasta 10elev0}
+					0: 
+						sol := rt / 1000000000;
+					1: 
+						sol := rt / 100000000;
+					2: 
+						sol := rt / 10000000;
+					3: 
+						sol := rt / 1000000;
+					4: 
+						sol := rt / 100000;
+					5: 
+						sol := rt / 10000;
+					6: 
+						sol := rt / 1000;
+					7: 
+						sol := rt / 100;
+					8: 
+						sol := rt / 10;
+					9: 
+						sol := rt;
+					10: 
+						sol := rt * 10;
+					11: 
+						sol := rt * 100;
+					end;
+					sol := sol / 10;
+					case i of
+					1: 						{Es algo llamado masa pero realmente es 'grasa'}
+						begin
+						sl[1] := sol;
+						if x = 100 then
+							sl[1] := 1;
+						if x = 0 then
+							sl[1] := 0.0000000001;
+						writedraw(sl[1]);
+						writedraw(' Kg.');
+						i := 7;
+						end;
+					2: 						{El tiempo en el nacemos para poder morir}
+						begin
+						sl[2] := sol;
+						if x = 100 then
+							sl[2] := 1;
+						if x = 0 then
+							sl[2] := 0.0000000001;
+						writedraw(sl[2]);
+						writedraw(' s.');
+						i := 7;
+						end;
+					3: 						{Equilibrio, esa cosa que hace que no nos 'cagamos'}
+						begin
+						sl[3] := x;
+						if x = 0 then
+							sl[3] := 1;
+						writedraw(sl[3]);
+						writedraw(' m.');
+						i := 7;
+						end;
+					4: 						{Limites, normas, siempre existen en el espacio}
+						begin
+						sl[4] := sol;
+						if x = 100 then
+							sl[4] := 1;
+						if x = 0 then
+							sl[4] := 0.0000000001;
+						writedraw(sl[4]);
+						writedraw(' m.');
+						i := 7;
+						end;
+					5: 					{Energia es lo que hace que estemos unidos o pasemos de todo}
+						begin
+						sl[5] := (x * Ed) / 100;
+						if x = 100 then
+							sl[5] := Ed;
+						if x = 0 then
+							sl[5] := 0;
+						writedraw(sl[5]);
+						writedraw(' J.');
+						i := 7;
+						end;
+					6: 						{Esa cosa que sirve para parar, ahh si frenos}
+						begin
+						sl[6] := sol;
+						if x = 100 then
+							sl[6] := 1;
+						if x = 0 then
+							sl[6] := 0.0000000001;
+						writedraw(sl[6]);
+						writedraw(' Kg/s.');
+						end;
+					end;
+					end;
+				end;
+			i := i + 1;
+		until i >= 7;							{Tenemos que preguntar por todos los sliders}
+		i := 1;
+		repeat									{y si la llamada es para un boton}
+			if ptinrect(p, bt[i]) then
+				case i of
+				1: 									{La creacion no creo que fuera como esto}
+					begin
+					invertrect(bt[i]);
+					setrect(aur, 232, 10, 445, 223);
+					crear(bt, aur, np, sp, sl);
+					invertrect(bt[i]);
+					i := 5;
+					end;
+				2: 									{Teletrasnsportacion, necesitamos de voluntad}
+					begin
+					invertrect(bt[i]);
+					setrect(aur, 232, 10, 445, 223);
+					mover(bt, aur, np, sp, sl);
+					invertrect(bt[i]);
+					i := 5;
+					end;
+				3: 									{Dejar de existir, pero es + facil decir 'Borrar'}
+					begin
+					invertrect(bt[i]);
+					borrar(bt, md, np, sp, sl);
+					invertrect(bt[i]);
+					i := 5;
+					end;
+				4: 									{Aunque existen + salidas, esta es la correcta}
+					begin
+					invertrect(bt[i]);
+					fin := true;
+					end;
+				end;
+			i := i + 1;
+		until i >= 5;								{Hemos preguntado por todos los botones}
+	until fin;
+	hideall;
+	end;
+
+                    {*** Programa Principal ***}
+begin
+np := 0;														{Inicializaciones}
+inic_sist(spart);
+inic_vsld(vsd);
+inic_bot(boton);
+inic_slid(slid);
+setrect(mundo, 230, 8, 460, 238);					{Dise–o pantalla}
+pantalla(boton, slid, mundo);
+opciones(boton, slid, spart, mundo, np, vsd);		{Cuerpo del programa}
+
+end.															{Muerte del programa...}
